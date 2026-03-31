@@ -54,18 +54,20 @@ pub struct CatPicture {
 
 pub async fn get_cat_fact(lang: &str) -> Result<String> {
     if !is_supported_language(lang) {
+        println!("Invalid language!");
         return Err(anyhow!("Language not supported"));
     }
     let client = reqwest::Client::new();
     let body = client
         .get(MEOW_FACT_URL)
-        .query(&["lang", lang])
+        .query(&[("lang", lang)])
         .send()
         .await?
         .json::<MeowFact>()
         .await?;
 
     if body.data.is_empty() {
+        println!("No cat fact");
         return Err(anyhow!("No cat fact was found at this time :("));
     }
 
@@ -76,7 +78,7 @@ pub async fn get_random_cat_picture() -> Result<String> {
     let client = reqwest::Client::new();
     let body = client
         .get(CATAAS_URL)
-        .query(&["json", "true"])
+        .query(&[("json", "true"), ("type", "square")])
         .send()
         .await?
         .json::<CatPicture>()
