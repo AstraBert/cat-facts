@@ -41,23 +41,18 @@ function App() {
     setErr(null);
   }
 
-  function catFactAndPic() {
+  async function catFactAndPic() {
     setIsLoading(true);
+    setErr(null);
     try {
-      invoke("cat_fact", { language: lang ?? "eng" })
-        .then((r) => {
-          setFact(r as string);
-        })
-        .catch((err) => {
-          setErr(err as string);
-        });
-      invoke("cat_pic")
-        .then((r) => {
-          setPicUrl(r as string);
-        })
-        .catch((err) => {
-          setErr(err as string);
-        });
+      const [factResult, picResult] = await Promise.all([
+        invoke<string>("cat_fact", { language: lang ?? "eng" }),
+        invoke<string>("cat_pic"),
+      ]);
+      setFact(factResult);
+      setPicUrl(picResult);
+    } catch (e) {
+      setErr(String(e));
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +61,7 @@ function App() {
   return (
     <main className="container min-h-screen flex flex-col p-4">
       {/* Language selector — top right */}
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end mb-6 mt-16">
         <Select
           defaultValue="eng"
           value={lang ?? "eng"}

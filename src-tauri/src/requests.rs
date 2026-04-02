@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
+use tauri_plugin_http::reqwest;
 
 const MEOW_FACT_URL: &str = "https://meowfacts.herokuapp.com/";
 const CATAAS_URL: &str = "https://cataas.com/cat";
